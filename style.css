@@ -1,5 +1,5 @@
-:root { --bg: #fbfaf7; --fg: #1c1b19; --muted: #6b675f; --line: #e4e0d8; --accent: #8a4b2a; }
-@media (prefers-color-scheme: dark) { :root { --bg: #141312; --fg: #ece8e1; --muted: #a39d93; --line: #2c2a27; --accent: #d39a74; } }
+:root { --bg: #ffffff; --fg: #111111; --muted: #666666; --line: #e2e2e2; --accent: #000000; }
+@media (prefers-color-scheme: dark) { :root { --bg: #000000; --fg: #f2f2f2; --muted: #a6a6a6; --line: #2a2a2a; --accent: #ffffff; } }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.65 Georgia, "Times New Roman", serif; }
 main { max-width: 720px; margin: 0 auto; padding: 48px 20px 80px; }
