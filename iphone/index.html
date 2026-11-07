@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Genius Gallery לאייפון · מסך נעילה שמתחלף</title>
+<meta name="description" content="יצירת מופת או רעיון גדול על מסך הנעילה של האייפון, עם שורה אחת שגורמת להסתכל פעמיים. דרך אפליקציית קיצורים של אפל, בלי להתקין כלום.">
+<link rel="icon" href="../icon.png">
+<link rel="stylesheet" href="../style.css">
+<style>
+.step { margin: 1.2em 0; }
+.step b.n { display: inline-block; min-width: 1.6em; }
+code { direction: ltr; unicode-bidi: embed; font-size: .92em; padding: 1px 5px; border: 1px solid var(--line); border-radius: 4px; }
+.shot { display: flex; gap: 12px; flex-wrap: wrap; margin: 1em 0; }
+.shot img { width: 160px; border-radius: 18px; border: 1px solid var(--line); }
+.en { direction: ltr; text-align: left; border-top: 1px solid var(--line); margin-top: 3em; padding-top: 1em; }
+</style>
+</head>
+<body>
+<main>
+<div class="hero">
+<img src="../icon.png" alt="">
+<div>
+<h1>Genius Gallery לאייפון</h1>
+<p class="meta">מסך נעילה שמתחלף לבד · דרך אפליקציית "קיצורים"</p>
+</div>
+</div>
+
+<p class="lead">יצירת מופת, צילום מהחלל או רעיון גדול על מסך הנעילה, עם שורה אחת שגורמת להסתכל פעמיים. באייפון אין צורך באפליקציה: אפליקציית "קיצורים" של אפל, שכבר מותקנת אצלכם, מחליפה את התמונה לבד.</p>
+
+<div class="shot">
+<img src="../ios/he/1.jpg" alt="דוגמה למסך נעילה">
+<img src="../ios/he/2.jpg" alt="דוגמה למסך נעילה">
+<img src="../ios/he/3.jpg" alt="דוגמה למסך נעילה">
+</div>
+
+<h2>שלב 1: בונים את הקיצור (פעם אחת, כשתי דקות)</h2>
+<p>פותחים את אפליקציית <b>קיצורים</b> (Shortcuts), לוחצים <b>+</b> ומוסיפים את הפעולות האלה לפי הסדר. השמות כאן באנגלית, כי כך הם מופיעים ברוב המכשירים. אם האייפון בעברית, מחפשים את הפעולה לפי המילה המודגשת.</p>
+<div class="step"><b class="n">1.</b> <b>Get Contents of URL</b> עם הכתובת <code>https://geniusgallery.app/ios/config.json</code></div>
+<div class="step"><b class="n">2.</b> <b>Get Dictionary Value</b>: מבקשים את הערך של <code>count</code> מתוך התוצאה הקודמת.</div>
+<div class="step"><b class="n">3.</b> <b>Random Number</b> בין <code>1</code> לבין הערך מהשלב הקודם.</div>
+<div class="step"><b class="n">4.</b> <b>Text</b> עם הכתובת <code>https://geniusgallery.app/ios/he/</code>, ומיד אחריה המשתנה <b>Random Number</b> ואז <code>.jpg</code>. לאנגלית מחליפים את <code>he</code> ב-<code>en</code>.</div>
+<div class="step"><b class="n">5.</b> <b>Get Contents of URL</b> עם ה-Text מהשלב הקודם.</div>
+<div class="step"><b class="n">6.</b> <b>Set Wallpaper Photo</b> (או <b>Set Wallpaper</b>): בוחרים <b>מסך נעילה</b> (Lock Screen), ובחץ הקטן מכבים את <b>Show Preview</b> ואת <b>Crop to Subject</b>.</div>
+<p>קוראים לקיצור <b>Genius Gallery</b> ושומרים. לחיצה עליו עכשיו כבר מחליפה את מסך הנעילה. כדאי לנסות.</p>
+<p><small>טיפ: אם הפעולה האחרונה לא משנה את מסך הנעילה, בוחרים קודם בהגדרות טפט מסוג "תמונה" (Photo), ומריצים שוב.</small></p>
+
+<h2>שלב 2: שיתחלף לבד</h2>
+<p>בלשונית <b>אוטומציה</b> (Automation) לוחצים <b>+</b> ובוחרים מתי להריץ את הקיצור. ההמלצה שלנו:</p>
+<ul>
+<li><b>כשפותחים אפליקציה שמשתמשים בה הרבה</b> (App), למשל וואטסאפ או אינסטגרם. בפעם הבאה שנועלים, מחכה יצירה חדשה.</li>
+<li>או <b>בשעות קבועות</b> (Time of Day), למשל בבוקר, בצהריים ובערב.</li>
+</ul>
+<p>בוחרים <b>Run Immediately</b> (להריץ מיד, בלי לשאול), ומכבים את ההתראה על כל ריצה אם היא מופיעה. בסוף בוחרים בקיצור <b>Genius Gallery</b>.</p>
+
+<h2>מה זה עושה, ומה לא</h2>
+<p>הקיצור מוריד בכל ריצה תמונה אחת מהאתר שלנו ומציב אותה כמסך הנעילה. הוא לא אוסף שום מידע ולא צריך חשבון. אפל לא מאפשרת להחליף טפט בכל פתיחת נעילה, ולכן ההחלפה קורית לפי האוטומציה שבחרתם. באנדרואיד יש אפליקציה מלאה שמחליפה בכל פתיחה: <a href="https://play.google.com/store/apps/details?id=app.geniusgallery">Genius Gallery ב-Google Play</a>.</p>
+
+<div class="en">
+<h2>English: Genius Gallery on iPhone</h2>
+<p>A masterpiece or a big idea on your iPhone lock screen, with one line that makes you look twice. No app needed: Apple's Shortcuts app sets it for you.</p>
+<p><b>1. Build the shortcut</b> (once, about two minutes). In Shortcuts, tap + and add, in order:</p>
+<ol>
+<li><b>Get Contents of URL</b>: <code>https://geniusgallery.app/ios/config.json</code></li>
+<li><b>Get Dictionary Value</b>: the value for <code>count</code>.</li>
+<li><b>Random Number</b> between <code>1</code> and that value.</li>
+<li><b>Text</b>: <code>https://geniusgallery.app/ios/en/</code> + <b>Random Number</b> + <code>.jpg</code></li>
+<li><b>Get Contents of URL</b> with that Text.</li>
+<li><b>Set Wallpaper Photo</b> on the <b>Lock Screen</b>, with Show Preview and Crop to Subject off.</li>
+</ol>
+<p>Name it <b>Genius Gallery</b>. Tapping it now already changes your lock screen.</p>
+<p><b>2. Make it automatic.</b> In Automation, tap + and pick when it runs: when you open an app you use a lot (WhatsApp, Instagram), or at set times. Choose <b>Run Immediately</b> and select the Genius Gallery shortcut.</p>
+<p>The shortcut downloads one image from our site each time. It collects nothing and needs no account. On Android there is a full app that changes the work on every unlock: <a href="https://play.google.com/store/apps/details?id=app.geniusgallery">Genius Gallery on Google Play</a>.</p>
+</div>
+</main>
+</body>
+</html>
