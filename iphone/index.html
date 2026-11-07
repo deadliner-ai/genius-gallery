@@ -3,75 +3,117 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Genius Gallery לאייפון · מסך נעילה שמתחלף</title>
-<meta name="description" content="יצירת מופת או רעיון גדול על מסך הנעילה של האייפון, עם שורה אחת שגורמת להסתכל פעמיים. דרך אפליקציית קיצורים של אפל, בלי להתקין כלום.">
+<title>Genius Gallery לאייפון · מסך הנעילה שלך, גלריה</title>
+<meta name="description" content="יצירת מופת או רעיון גדול על מסך הנעילה של האייפון, ומתחלפים לבד. דרך אפליקציית קיצורים של אפל, בלי להתקין כלום.">
 <link rel="icon" href="../icon.png">
-<link rel="stylesheet" href="../style.css">
 <style>
-.step { margin: 1.2em 0; }
-.step b.n { display: inline-block; min-width: 1.6em; }
-code { direction: ltr; unicode-bidi: embed; font-size: .92em; padding: 1px 5px; border: 1px solid var(--line); border-radius: 4px; }
-.shot { display: flex; gap: 12px; flex-wrap: wrap; margin: 1em 0; }
-.shot img { width: 160px; border-radius: 18px; border: 1px solid var(--line); }
-.en { direction: ltr; text-align: left; border-top: 1px solid var(--line); margin-top: 3em; padding-top: 1em; }
+:root { --bg:#000; --fg:#f2f2f2; --muted:#9a9a9a; --line:#262626; --card:#0f0f0f; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--fg); font:17px/1.6 system-ui, -apple-system, "Segoe UI", Arial, sans-serif; }
+main { max-width:560px; margin:0 auto; padding:28px 18px 70px; }
+.top { display:flex; justify-content:space-between; align-items:center; font-size:14px; color:var(--muted); }
+.top a { color:var(--muted); }
+h1 { font:400 2.2rem/1.15 Georgia, serif; margin:26px 0 10px; text-align:center; }
+.sub { text-align:center; color:var(--muted); margin:0 0 26px; }
+.phone { width:260px; height:563px; margin:0 auto 30px; border-radius:42px; border:10px solid #1b1b1b; box-shadow:0 0 0 1px #333; overflow:hidden; position:relative; background:#111; }
+.phone img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity 1.2s; }
+.phone img.on { opacity:1; }
+.phone .clock { position:absolute; top:46px; width:100%; text-align:center; font:200 64px/1 system-ui, -apple-system, sans-serif; color:#fff; text-shadow:0 1px 8px rgba(0,0,0,.4); z-index:2; }
+.phone .date { position:absolute; top:28px; width:100%; text-align:center; font:500 15px system-ui, sans-serif; color:#fff; z-index:2; }
+h2 { font:600 1.1rem system-ui, sans-serif; margin:34px 0 12px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:16px 16px 14px; margin:12px 0; }
+.card .num { font:600 13px system-ui, sans-serif; color:var(--muted); }
+.card .act { direction:ltr; text-align:right; font:600 1.05rem system-ui, sans-serif; margin:4px 0 6px; }
+.card p { margin:0; color:#d6d6d6; font-size:16px; }
+.copy { display:flex; gap:8px; margin-top:10px; direction:ltr; }
+.copy code { flex:1; overflow-x:auto; white-space:nowrap; background:#000; border:1px solid var(--line); border-radius:10px; padding:9px 10px; font:13px ui-monospace, Menlo, Consolas, monospace; color:#ddd; }
+.copy button { border:0; border-radius:10px; padding:0 14px; background:#fff; color:#000; font:600 14px system-ui, sans-serif; cursor:pointer; }
+.big { display:block; text-align:center; background:#fff; color:#000; text-decoration:none; font:600 17px system-ui, sans-serif; border-radius:14px; padding:14px; margin:18px 0; }
+.note { color:var(--muted); font-size:15px; }
+ul { padding-right:20px; margin:8px 0; }
+li { margin:6px 0; }
+a { color:#fff; }
+.foot { margin-top:40px; border-top:1px solid var(--line); padding-top:18px; color:var(--muted); font-size:15px; }
 </style>
 </head>
 <body>
 <main>
-<div class="hero">
-<img src="../icon.png" alt="">
-<div>
-<h1>Genius Gallery לאייפון</h1>
-<p class="meta">מסך נעילה שמתחלף לבד · דרך אפליקציית "קיצורים"</p>
-</div>
-</div>
+<div class="top"><span>Genius Gallery</span><a href="en/">English</a></div>
 
-<p class="lead">יצירת מופת, צילום מהחלל או רעיון גדול על מסך הנעילה, עם שורה אחת שגורמת להסתכל פעמיים. באייפון אין צורך באפליקציה: אפליקציית "קיצורים" של אפל, שכבר מותקנת אצלכם, מחליפה את התמונה לבד.</p>
+<h1>מסך הנעילה שלך,<br>גלריה</h1>
+<p class="sub">יצירת מופת, צילום מהחלל או רעיון גדול, עם שורה אחת שגורמת להסתכל פעמיים. ומתחלף לבד.</p>
 
-<div class="shot">
-<img src="../ios/he/1.jpg" alt="דוגמה למסך נעילה">
-<img src="../ios/he/2.jpg" alt="דוגמה למסך נעילה">
-<img src="../ios/he/3.jpg" alt="דוגמה למסך נעילה">
+<div class="phone" id="phone">
+<div class="date" id="date"></div>
+<div class="clock" id="clock"></div>
 </div>
 
-<h2>שלב 1: בונים את הקיצור (פעם אחת, כשתי דקות)</h2>
-<p>פותחים את אפליקציית <b>קיצורים</b> (Shortcuts), לוחצים <b>+</b> ומוסיפים את הפעולות האלה לפי הסדר. השמות כאן באנגלית, כי כך הם מופיעים ברוב המכשירים. אם האייפון בעברית, מחפשים את הפעולה לפי המילה המודגשת.</p>
-<div class="step"><b class="n">1.</b> <b>Get Contents of URL</b> עם הכתובת <code>https://geniusgallery.app/ios/config.json</code></div>
-<div class="step"><b class="n">2.</b> <b>Get Dictionary Value</b>: מבקשים את הערך של <code>count</code> מתוך התוצאה הקודמת.</div>
-<div class="step"><b class="n">3.</b> <b>Random Number</b> בין <code>1</code> לבין הערך מהשלב הקודם.</div>
-<div class="step"><b class="n">4.</b> <b>Text</b> עם הכתובת <code>https://geniusgallery.app/ios/he/</code>, ומיד אחריה המשתנה <b>Random Number</b> ואז <code>.jpg</code>. לאנגלית מחליפים את <code>he</code> ב-<code>en</code>.</div>
-<div class="step"><b class="n">5.</b> <b>Get Contents of URL</b> עם ה-Text מהשלב הקודם.</div>
-<div class="step"><b class="n">6.</b> <b>Set Wallpaper Photo</b> (או <b>Set Wallpaper</b>): בוחרים <b>מסך נעילה</b> (Lock Screen), ובחץ הקטן מכבים את <b>Show Preview</b> ואת <b>Crop to Subject</b>.</div>
-<p>קוראים לקיצור <b>Genius Gallery</b> ושומרים. לחיצה עליו עכשיו כבר מחליפה את מסך הנעילה. כדאי לנסות.</p>
-<p><small>טיפ: אם הפעולה האחרונה לא משנה את מסך הנעילה, בוחרים קודם בהגדרות טפט מסוג "תמונה" (Photo), ומריצים שוב.</small></p>
+<p class="sub">באייפון אין צורך באפליקציה. אפליקציית <b>קיצורים</b> של אפל, שכבר מותקנת אצלכם, מחליפה את התמונה. מגדירים פעם אחת, כשתי דקות.</p>
+
+<h2>שלב 1: בונים את הקיצור</h2>
+<p class="note">פותחים את אפליקציית <b>קיצורים</b> (Shortcuts), לוחצים <b>+</b>, ומוסיפים את שש הפעולות האלה לפי הסדר. מחפשים כל פעולה לפי השם שלה.</p>
+
+<div class="card"><div class="num">פעולה 1</div><div class="act">Get Contents of URL</div><p>עם הכתובת:</p>
+<div class="copy"><code>https://geniusgallery.app/ios/config.json</code><button data-copy="https://geniusgallery.app/ios/config.json">העתקה</button></div></div>
+
+<div class="card"><div class="num">פעולה 2</div><div class="act">Get Dictionary Value</div><p>מבקשים את הערך של <b>count</b>.</p>
+<div class="copy"><code>count</code><button data-copy="count">העתקה</button></div></div>
+
+<div class="card"><div class="num">פעולה 3</div><div class="act">Random Number</div><p>מספר אקראי בין <b>1</b> לבין הערך מהפעולה הקודמת.</p></div>
+
+<div class="card"><div class="num">פעולה 4</div><div class="act">Text</div><p>מדביקים את הכתובת, ומיד אחריה מוסיפים את המשתנה <b>Random Number</b> ואז <b>.jpg</b></p>
+<div class="copy"><code>https://geniusgallery.app/ios/he/</code><button data-copy="https://geniusgallery.app/ios/he/">העתקה</button></div></div>
+
+<div class="card"><div class="num">פעולה 5</div><div class="act">Get Contents of URL</div><p>עם ה-Text מהפעולה הקודמת.</p></div>
+
+<div class="card"><div class="num">פעולה 6</div><div class="act">Set Wallpaper Photo</div><p>בוחרים <b>מסך נעילה</b>, ובחץ הקטן מכבים את <b>Show Preview</b> ואת <b>Crop to Subject</b>.</p></div>
+
+<p class="note">קוראים לקיצור <b>Genius Gallery</b> ושומרים. לחיצה עליו כבר מחליפה את מסך הנעילה, נסו. אם לא קורה כלום, בוחרים קודם בהגדרות טפט מסוג "תמונה", ומנסים שוב.</p>
 
 <h2>שלב 2: שיתחלף לבד</h2>
-<p>בלשונית <b>אוטומציה</b> (Automation) לוחצים <b>+</b> ובוחרים מתי להריץ את הקיצור. ההמלצה שלנו:</p>
+<div class="card"><p>בלשונית <b>אוטומציה</b> לוחצים <b>+</b> ובוחרים מתי:</p>
 <ul>
-<li><b>כשפותחים אפליקציה שמשתמשים בה הרבה</b> (App), למשל וואטסאפ או אינסטגרם. בפעם הבאה שנועלים, מחכה יצירה חדשה.</li>
-<li>או <b>בשעות קבועות</b> (Time of Day), למשל בבוקר, בצהריים ובערב.</li>
+<li><b>כשפותחים אפליקציה שמשתמשים בה הרבה</b>, כמו וואטסאפ או אינסטגרם. בפעם הבאה שנועלים, מחכה יצירה חדשה.</li>
+<li>או <b>בשעות קבועות</b>, למשל בוקר, צהריים וערב.</li>
 </ul>
-<p>בוחרים <b>Run Immediately</b> (להריץ מיד, בלי לשאול), ומכבים את ההתראה על כל ריצה אם היא מופיעה. בסוף בוחרים בקיצור <b>Genius Gallery</b>.</p>
+<p>בוחרים <b>להריץ מיד</b> (Run Immediately), ואז בקיצור <b>Genius Gallery</b>.</p></div>
 
-<h2>מה זה עושה, ומה לא</h2>
-<p>הקיצור מוריד בכל ריצה תמונה אחת מהאתר שלנו ומציב אותה כמסך הנעילה. הוא לא אוסף שום מידע ולא צריך חשבון. אפל לא מאפשרת להחליף טפט בכל פתיחת נעילה, ולכן ההחלפה קורית לפי האוטומציה שבחרתם. באנדרואיד יש אפליקציה מלאה שמחליפה בכל פתיחה: <a href="https://play.google.com/store/apps/details?id=app.geniusgallery">Genius Gallery ב-Google Play</a>.</p>
+<a class="big" href="../ios/he/1.jpg">רוצים קודם להציץ? יצירה לדוגמה</a>
 
-<div class="en">
-<h2>English: Genius Gallery on iPhone</h2>
-<p>A masterpiece or a big idea on your iPhone lock screen, with one line that makes you look twice. No app needed: Apple's Shortcuts app sets it for you.</p>
-<p><b>1. Build the shortcut</b> (once, about two minutes). In Shortcuts, tap + and add, in order:</p>
-<ol>
-<li><b>Get Contents of URL</b>: <code>https://geniusgallery.app/ios/config.json</code></li>
-<li><b>Get Dictionary Value</b>: the value for <code>count</code>.</li>
-<li><b>Random Number</b> between <code>1</code> and that value.</li>
-<li><b>Text</b>: <code>https://geniusgallery.app/ios/en/</code> + <b>Random Number</b> + <code>.jpg</code></li>
-<li><b>Get Contents of URL</b> with that Text.</li>
-<li><b>Set Wallpaper Photo</b> on the <b>Lock Screen</b>, with Show Preview and Crop to Subject off.</li>
-</ol>
-<p>Name it <b>Genius Gallery</b>. Tapping it now already changes your lock screen.</p>
-<p><b>2. Make it automatic.</b> In Automation, tap + and pick when it runs: when you open an app you use a lot (WhatsApp, Instagram), or at set times. Choose <b>Run Immediately</b> and select the Genius Gallery shortcut.</p>
-<p>The shortcut downloads one image from our site each time. It collects nothing and needs no account. On Android there is a full app that changes the work on every unlock: <a href="https://play.google.com/store/apps/details?id=app.geniusgallery">Genius Gallery on Google Play</a>.</p>
+<div class="foot">
+<p>הקיצור מוריד בכל ריצה תמונה אחת מהאתר שלנו. הוא לא אוסף שום מידע ולא צריך חשבון. אפל לא מאפשרת להחליף טפט בכל פתיחת נעילה, ולכן ההחלפה קורית לפי האוטומציה שבחרתם.</p>
+<p>באנדרואיד יש אפליקציה מלאה, שמחליפה יצירה בכל פתיחת נעילה: <a href="https://play.google.com/store/apps/details?id=app.geniusgallery&referrer=utm_source%3Dsite%26utm_medium%3Diphone">Genius Gallery ב-Google Play</a></p>
 </div>
 </main>
+<script>
+// The phone frame cycles through real wallpapers from the collection, under a live clock.
+(function () {
+  var phone = document.getElementById('phone'), lang = 'he', n = 8, imgs = [];
+  fetch('../ios/config.json').then(function (r) { return r.json(); }).then(function (c) {
+    var picks = [];
+    while (picks.length < n) { var k = 1 + Math.floor(Math.random() * c.count); if (picks.indexOf(k) < 0) picks.push(k); }
+    picks.forEach(function (k, i) {
+      var im = new Image(); im.src = '../ios/' + lang + '/' + k + '.jpg'; im.alt = '';
+      if (i === 0) im.className = 'on';
+      phone.appendChild(im); imgs.push(im);
+    });
+    var cur = 0;
+    setInterval(function () { imgs[cur].className = ''; cur = (cur + 1) % imgs.length; imgs[cur].className = 'on'; }, 3200);
+  });
+  function tick() {
+    var d = new Date();
+    document.getElementById('clock').textContent = d.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('date').textContent = d.toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' });
+  }
+  tick(); setInterval(tick, 15000);
+  document.querySelectorAll('button[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      navigator.clipboard.writeText(b.getAttribute('data-copy')).then(function () {
+        var t = b.textContent; b.textContent = 'הועתק ✓'; setTimeout(function () { b.textContent = t; }, 1500);
+      });
+    });
+  });
+})();
+</script>
 </body>
 </html>
