@@ -1,0 +1,13 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.geniusgallery",
+      "sha256_cert_fingerprints": [
+        "19:0A:D6:80:02:1F:BA:0B:AA:CD:A9:BB:C3:29:6C:3D:85:3A:00:B3:FC:78:FA:9E:2E:7F:5A:0E:C2:63:31:72",
+        "87:EC:7B:0B:65:7D:33:4C:B1:18:AB:C6:17:EA:4A:78:EC:11:62:CB:2B:94:60:27:62:6E:93:90:3A:FC:F9:FA"
+      ]
+    }
+  }
+]
