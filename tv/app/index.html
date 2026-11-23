@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Genius Gallery</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="/favicon.ico">
+<style>
+@font-face{font-family:Alef;src:url(/assets/alef-400.woff2) format("woff2");font-weight:400}
+@font-face{font-family:Alef;src:url(/assets/alef-700.woff2) format("woff2");font-weight:700}
+@font-face{font-family:Cormorant;src:url(/assets/cormorant-600.woff2) format("woff2");font-weight:600}
+:root{--ink:#f4efe8;--glass:rgba(0,0,0,.62);--muted:rgba(244,239,232,.72)}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#000;color:var(--ink);overflow:hidden;cursor:none;
+  font-family:Alef,"Segoe UI",Roboto,Arial,sans-serif}
+#stage{position:fixed;inset:0}
+.art{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity 1.2s ease}
+.art.on{opacity:1}
+#scrim{position:fixed;inset:auto 0 0 0;height:46vh;pointer-events:none;
+  background:linear-gradient(to top,rgba(0,0,0,.9),rgba(0,0,0,.78) 18%,rgba(0,0,0,.45) 45%,rgba(0,0,0,.12) 75%,transparent);transition:opacity .6s}
+#cap{position:fixed;bottom:5vh;inset-inline-start:4.5vw;max-width:58vw;text-align:start;transition:opacity .6s}
+#cap h1{font-size:3.4vh;font-weight:700;margin:0 0 .6vh;line-height:1.2}
+#cap .by{font-size:2.1vh;color:var(--muted);margin:0 0 1.4vh}
+#cap p{font-size:2.3vh;margin:0;line-height:1.45}
+#corner{position:fixed;bottom:5vh;inset-inline-end:4.5vw;text-align:end;transition:opacity .6s}
+#time{font-family:Cormorant,Georgia,serif;font-weight:600;font-size:9vh;line-height:1;letter-spacing:.01em}
+#date{font-size:2.1vh;letter-spacing:.06em;color:var(--muted);margin-top:1.2vh}
+#mark{display:flex;justify-content:flex-end;align-items:center;gap:1vh;margin-top:2.4vh;font-family:Cormorant,Georgia,serif;font-size:2.4vh;color:var(--muted)}
+#mark b{font-weight:600;font-size:3vh;letter-spacing:-.06em;color:var(--ink)}
+.hide{opacity:0!important}
+/* The dock: any key brings it up, the arrows move along it, OK presses. */
+#dock{position:fixed;top:3vh;left:50%;transform:translateX(-50%);display:flex;gap:.4vh;padding:.8vh;border-radius:5vh;
+  background:var(--glass);direction:ltr;transition:opacity .25s}
+#dock button,.row,.chip{font:inherit;color:var(--ink);background:transparent;border:0;border-radius:4vh;cursor:none}
+#dock button{font-size:2.1vh;padding:1.2vh 2.8vh}
+#dock button.sel,.row.sel,.chip.sel{background:var(--ink);color:#111}
+/* Settings */
+#settings{position:fixed;inset:0;background:#111;overflow:hidden;padding:6vh 7vw}
+#settings h2{font-weight:400;font-size:3.6vh;margin:0 0 3vh}
+#settings h3{font-weight:400;font-size:1.9vh;color:#aaa;margin:3vh 0 1.2vh}
+#sbody{height:80vh;overflow:hidden}
+#sinner{transition:transform .2s}
+.chips{display:flex;flex-wrap:wrap;gap:1vh}
+.chip{font-size:2vh;padding:1.1vh 2.4vh;border:.2vh solid #666;color:#ddd}
+.chip.on{background:#f4efe8;color:#111;border-color:#f4efe8}
+.chip.on.sel{outline:.4vh solid #8a8a8a;outline-offset:.3vh}
+.chip.sel:not(.on){background:#3a3a3a;color:#fff}
+.row{display:block;width:100%;text-align:start;font-size:2.3vh;padding:1.6vh 2.4vh;margin-bottom:1vh;background:#222;border-radius:1.2vh}
+.note{font-size:1.6vh;color:#888;margin-top:3vh}
+#toast{position:fixed;bottom:4vh;left:50%;transform:translateX(-50%);background:var(--glass);padding:1.4vh 3vh;border-radius:3vh;font-size:2vh;transition:opacity .4s}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div id="scrim"></div>
+<div id="cap"><h1 id="t"></h1><div class="by" id="by"></div><p id="s"></p></div>
+<div id="corner"><div id="time"></div><div id="date"></div><div id="mark"><b>GG</b><span>Genius Gallery</span></div></div>
+<div id="dock" class="hide" hidden></div>
+<div id="settings" hidden><h2>Genius Gallery</h2><div id="sbody"><div id="sinner"></div></div></div>
+<div id="toast" class="hide"></div>
+<script>
+"use strict";
+var LANGS = ["en","he","es","pt","fr","de","ru","ar","zh","ja"];
+var INTERVALS = [1,3,5,10,15,30];
+var S = {}, CAT = null, TEXT = {}, items = [], order = [], pos = -1, timer = 0, base = "/data/v16/";
+var store = (function(){ try { localStorage.setItem("gg_t","1"); return localStorage; } catch (e) { return null; } })();
+var mem = {};
+function get(k, d){ try { var v = store ? store.getItem("gg_" + k) : mem[k]; return v == null ? d : JSON.parse(v); } catch (e) { return d; } }
+function put(k, v){ try { if (store) store.setItem("gg_" + k, JSON.stringify(v)); else mem[k] = JSON.stringify(v); } catch (e) {} }
+
+function autoLang(){ var n = (navigator.language || "en").slice(0,2).toLowerCase(); if (n === "iw") n = "he"; return LANGS.indexOf(n) >= 0 ? n : "en"; }
+function lang(){ var l = get("lang", "auto"); return l === "auto" ? autoLang() : l; }
+function s(k){ var row = S[k]; if (!row) return k; return row[LANGS.indexOf(lang())] || row[0]; }
+function rtl(){ var l = lang(); return l === "he" || l === "ar"; }
+function business(){ return get("business", false); }
+function nudes(){ return get("nudes", false) && !business(); }
+function catOn(c){ return get("cat_" + c, true); }
+function liked(){ return get("liked", []); }
+
+function load(url){ return fetch(url, {cache: "no-cache"}).then(function(r){ if (!r.ok) throw new Error(r.status); return r.json(); }); }
+
+function start(){
+  Promise.all([load("strings.json"), load(base + "latest.json")]).then(function(r){
+    S = r[0];
+    return load(base + r[1].version + "/catalog.json").then(function(c){ CAT = c; base = base + r[1].version + "/"; return loadText(); });
+  }).then(function(){ build(); next(); tick(); }).catch(function(e){ toast("Could not load the gallery. Check the connection."); setTimeout(start, 30000); });
+}
+function loadText(){ var l = lang(); if (TEXT[l]) return Promise.resolve(); return load(base + "text_" + l + ".json").then(function(t){ TEXT[l] = t; }); }
+
+function cats(){ var seen = {}, list = []; CAT.items.forEach(function(i){ if (!seen[i.cat]) { seen[i.cat] = 1; list.push(i.cat); } }); return list; }
+function build(){
+  items = CAT.items.filter(function(i){ return catOn(i.cat) && (!i.nude || nudes()); });
+  order = items.map(function(_, k){ return k; });
+  for (var k = order.length - 1; k > 0; k--) { var j = Math.floor(Math.random() * (k + 1)); var t = order[k]; order[k] = order[j]; order[j] = t; }
+  pos = -1;
+}
+function current(){ return items[order[pos]]; }
+
+function show(item){
+  if (!item) return;
+  var img = new Image();
+  img.className = "art";
+  img.alt = "";
+  img.onload = function(){
+    var stage = document.getElementById("stage");
+    stage.appendChild(img);
+    requestAnimationFrame(function(){ img.classList.add("on"); });
+    setTimeout(function(){ while (stage.children.length > 1) stage.removeChild(stage.firstChild); }, 1400);
+    caption(item);
+    preload();
+  };
+  img.onerror = function(){ next(); };
+  img.src = item.img;
+  schedule();
+}
+function caption(item){
+  var t = (TEXT[lang()] || {})[item.id] || [];
+  document.getElementById("t").textContent = t[0] || item.te || "";
+  var by = (t[1] || item.ae || "") + (item.year ? ", " + item.year : "");
+  document.getElementById("by").textContent = by.replace(/^, /, "");
+  document.getElementById("s").textContent = t[2] || "";
+  document.documentElement.dir = rtl() ? "rtl" : "ltr";
+  document.documentElement.lang = lang();
+}
+function preload(){ var n = items[order[(pos + 1) % order.length]]; if (n) { var p = new Image(); p.src = n.img; } }
+function next(){ if (!order.length) return empty(); pos = (pos + 1) % order.length; show(current()); }
+function prev(){ if (!order.length) return; pos = (pos - 1 + order.length) % order.length; show(current()); }
+function empty(){ toast(s("select_all")); }
+function schedule(){ clearTimeout(timer); timer = setTimeout(next, get("interval", 5) * 60000); }
+
+function tick(){
+  var d = new Date(), l = lang();
+  var h24 = !/^en/.test(l);
+  document.getElementById("time").textContent = d.toLocaleTimeString(l, {hour: "numeric", minute: "2-digit", hour12: !h24}).replace(/\s?[AP]M$/i, "");
+  document.getElementById("date").textContent = d.toLocaleDateString(l, {weekday: "long", day: "numeric", month: "long"}).replace(/,/g, " ·");
+  setTimeout(tick, 60000 - (Date.now() % 60000) + 50);
+}
+function captionsOn(){ return get("captions", true); }
+function applyCaptions(){ ["cap","scrim","corner"].forEach(function(id){ document.getElementById(id).classList.toggle("hide", !captionsOn()); }); }
+
+var toastT = 0;
+function toast(m){ var t = document.getElementById("toast"); t.textContent = m; t.classList.remove("hide"); clearTimeout(toastT); toastT = setTimeout(function(){ t.classList.add("hide"); }, 4000); }
+
+/* ---- Dock ---- */
+var dockSel = 0, dockT = 0;
+var dockItems = [
+  {k: "tv_prev", f: function(){ prev(); }},
+  {k: "captions", f: function(){ put("captions", !captionsOn()); applyCaptions(); }},
+  {k: "tv_like", f: function(){ var it = current(); if (!it) return; var L = liked(), i = L.indexOf(it.id); if (i >= 0) L.splice(i, 1); else L.push(it.id); put("liked", L); }},
+  {k: "settings", f: function(){ openSettings(); }},
+  {k: "tv_next", f: function(){ next(); }}
+];
+function dockOpen(){ return !document.getElementById("dock").hidden; }
+function renderDock(){
+  var d = document.getElementById("dock"); d.innerHTML = "";
+  dockItems.forEach(function(it, i){
+    var b = document.createElement("button");
+    var label = s(it.k);
+    if (it.k === "tv_like" && current() && liked().indexOf(current().id) >= 0) label = s("tv_liked");
+    b.textContent = label; if (i === dockSel) b.className = "sel";
+    d.appendChild(b);
+  });
+}
+function showDock(i){ dockSel = i; var d = document.getElementById("dock"); renderDock(); d.hidden = false; requestAnimationFrame(function(){ d.classList.remove("hide"); }); poke(); }
+function hideDock(){ var d = document.getElementById("dock"); d.classList.add("hide"); setTimeout(function(){ d.hidden = true; }, 260); }
+function poke(){ clearTimeout(dockT); dockT = setTimeout(hideDock, 6000); }
+
+/* ---- Settings: one list, the arrows move to the nearest control in that direction ---- */
+var focusables = [], fsel = 0;
+function openSettings(){ hideDock(); document.getElementById("settings").hidden = false; renderSettings(0); }
+function closeSettings(){ document.getElementById("settings").hidden = true; build(); loadText().then(function(){ next(); }); }
+function renderSettings(keep){
+  var root = document.getElementById("sinner"); root.innerHTML = ""; focusables = [];
+  document.getElementById("settings").dir = rtl() ? "rtl" : "ltr";
+  function h(t){ var e = document.createElement("h3"); e.textContent = t; root.appendChild(e); }
+  function chip(parent, label, on, f){ var b = document.createElement("button"); b.className = "chip" + (on ? " on" : ""); b.textContent = label; b._f = f; parent.appendChild(b); focusables.push(b); }
+  function row(label, f){ var b = document.createElement("button"); b.className = "row"; b.textContent = label; b._f = f; root.appendChild(b); focusables.push(b); }
+  var all = cats(), art = all.filter(function(c){ return c.indexOf("exp_") === 0; }), more = all.filter(function(c){ return c.indexOf("exp_") !== 0; });
+  [[s("world_art"), art], [s("world_more"), more]].forEach(function(g){
+    h(g[0]); var box = document.createElement("div"); box.className = "chips"; root.appendChild(box);
+    g[1].forEach(function(c){ chip(box, s("cat_" + c), catOn(c), function(){ put("cat_" + c, !catOn(c)); }); });
+  });
+  if (!business()) { h(" "); var nb = document.createElement("div"); nb.className = "chips"; root.appendChild(nb);
+    chip(nb, s("nude_title"), nudes(), function(){ put("nudes", !get("nudes", false)); }); }
+  h(" ");
+  row(s("mode") + ": " + s(business() ? "mode_business" : "mode_personal"), function(){ put("business", !business()); });
+  var ls = get("lang", "auto");
+  row(s("language") + ": " + (ls === "auto" ? s("auto") : S.lang_name[LANGS.indexOf(ls)]), function(){
+    var opts = ["auto"].concat(LANGS); put("lang", opts[(opts.indexOf(ls) + 1) % opts.length]); loadText();
+  });
+  var iv = get("interval", 5);
+  row(s("every").replace("%s", s("min").replace("%d", iv)), function(){ put("interval", INTERVALS[(INTERVALS.indexOf(iv) + 1) % INTERVALS.length]); });
+  row(s("captions") + ": " + s(captionsOn() ? "on" : "off"), function(){ put("captions", !captionsOn()); applyCaptions(); });
+  row(s("close"), function(){ closeSettings(); });
+  fsel = Math.min(keep || 0, focusables.length - 1); paintSel();
+}
+function paintSel(){
+  focusables.forEach(function(b, i){ b.classList.toggle("sel", i === fsel); });
+  var b = focusables[fsel], inner = document.getElementById("sinner"), box = document.getElementById("sbody");
+  var top = b.offsetTop, h = box.clientHeight, cur = -(parseFloat((inner.style.transform || "").replace(/[^-\d.]/g, "")) || 0);
+  if (top - cur > h - b.offsetHeight * 2) cur = top - h + b.offsetHeight * 2; if (top - cur < 0) cur = Math.max(0, top - b.offsetHeight);
+  inner.style.transform = "translateY(" + (-cur) + "px)";
+}
+function moveSel(dx, dy){
+  var a = focusables[fsel].getBoundingClientRect(), ax = a.left + a.width / 2, ay = a.top + a.height / 2, best = -1, bd = 1e9;
+  focusables.forEach(function(b, i){
+    if (i === fsel) return; var r = b.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+    var ddx = x - ax, ddy = y - ay;
+    if (dx && (Math.sign(ddx) !== dx || Math.abs(ddy) > a.height * .6)) return;
+    if (dy && (Math.sign(ddy) !== dy || Math.abs(ddy) < a.height * .5)) return;
+    var dist = dx ? Math.abs(ddx) : Math.abs(ddy) * 4 + Math.abs(ddx);
+    if (dist < bd) { bd = dist; best = i; }
+  });
+  if (best >= 0) { fsel = best; paintSel(); }
+}
+
+/* ---- Keys: arrows, OK and Back across TV makers (Samsung 10009, LG 461) ---- */
+var BACK = [8, 27, 10009, 461, 166];
+document.addEventListener("keydown", function(e){
+  var k = e.keyCode;
+  if (!document.getElementById("settings").hidden) {
+    e.preventDefault();
+    if (k === 37) moveSel(-1, 0); else if (k === 39) moveSel(1, 0);
+    else if (k === 38) moveSel(0, -1); else if (k === 40) moveSel(0, 1);
+    else if (k === 13) { focusables[fsel]._f(); renderSettings(fsel); }
+    else if (BACK.indexOf(k) >= 0) closeSettings();
+    return;
+  }
+  if (dockOpen()) {
+    e.preventDefault(); poke();
+    if (k === 37) { dockSel = Math.max(0, dockSel - 1); renderDock(); }
+    else if (k === 39) { dockSel = Math.min(dockItems.length - 1, dockSel + 1); renderDock(); }
+    else if (k === 13) { dockItems[dockSel].f(); if (!document.getElementById("settings").hidden) return; renderDock(); }
+    else if (BACK.indexOf(k) >= 0) hideDock();
+    return;
+  }
+  if (k === 39 || k === 417) { e.preventDefault(); next(); }
+  else if (k === 37 || k === 412) { e.preventDefault(); prev(); }
+  else if (k === 38) { e.preventDefault(); showDock(3); }
+  else if (k === 13 || k === 40) { e.preventDefault(); showDock(4); }
+});
+document.addEventListener("click", function(){ if (!dockOpen() && document.getElementById("settings").hidden) showDock(4); });
+/* A screen that is always on: ask the browser to keep it awake where it can. */
+try { if (navigator.wakeLock) navigator.wakeLock.request("screen").catch(function(){}); } catch (e) {}
+try { if (window.tizen && tizen.tvinputdevice) ["MediaPlayPause","MediaFastForward","MediaRewind"].forEach(function(n){ try { tizen.tvinputdevice.registerKey(n); } catch (x) {} }); } catch (e) {}
+applyCaptions();
+start();
+</script>
+</body>
+</html>
