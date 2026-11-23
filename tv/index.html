@@ -36,7 +36,7 @@
 <p>On many Android TV devices: Settings, then Device Preferences, then Screen saver, and choose Genius Gallery. The menu names differ a little between makers.</p>
 <h2>On Google TV, one extra step</h2>
 <p>Since Android TV 12, Google TV devices no longer let you pick another app's screensaver in the settings. The common workaround, the same one other screensaver apps use, is one command from a computer connected to the TV with ADB (Android Debug Bridge):</p>
-<p><code>adb shell settings put secure screensaver_components dev.ozk.gallerydream/.ArtDream</code></p>
+<p><code>adb shell settings put secure screensaver_components app.geniusgallery/dev.ozk.gallerydream.ArtDream</code></p>
 <p>To use ADB you first turn on developer options and network debugging on the TV. If that sounds like too much, opening Genius Gallery from the apps row gives you the same art, full screen.</p>
 <p><a class="btn" href="https://play.google.com/store/apps/details?id=app.geniusgallery&amp;hl=en&amp;referrer=utm_source%3Dsite%26utm_medium%3Ddoc%26utm_content%3Dtv">Get it on Google Play</a></p>
 <p class="fine">Choosing Ambient mode again in the TV's settings should bring Google's own screensaver back.</p>
